@@ -39,10 +39,24 @@ class _HomepageState extends State<Homepage> {
                           behavior: NoGlowBehaviour(),
                           child: ListView.builder(
                             itemCount: snapshot.data.length,
-                            itemBuilder: (context, index) => TaskCardWidget(
-                              title: snapshot.data[index].title,
-                              desc: snapshot.data[index].description,
-                            ),
+                            itemBuilder: (context, index) {
+                              return GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => Taskpage(
+                                        task: snapshot.data[index],
+                                      ),
+                                    ),
+                                  );
+                                },
+                                child: TaskCardWidget(
+                                  title: snapshot.data[index].title,
+                                  desc: snapshot.data[index].description,
+                                ),
+                              );
+                            },
                           ),
                         );
                       },
@@ -57,7 +71,11 @@ class _HomepageState extends State<Homepage> {
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => Taskpage()),
+                      MaterialPageRoute(
+                        builder: (context) => Taskpage(
+                          task: null,
+                        ),
+                      ),
                     ).then((value) => setState(() {}));
                   },
                   child: Container(

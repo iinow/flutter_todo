@@ -4,11 +4,25 @@ import 'package:flutter_todo/models/task.dart';
 import 'package:flutter_todo/widgets.dart';
 
 class Taskpage extends StatefulWidget {
+  final Task task;
+  Taskpage({@required this.task});
+
   @override
   _TaskpageState createState() => _TaskpageState();
 }
 
 class _TaskpageState extends State<Taskpage> {
+  String _taskTitle = '';
+
+  @override
+  void initState() {
+    if (widget.task != null) {
+      this._taskTitle = widget.task.title;
+    }
+    print('ID: ${widget.task?.id}');
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -41,17 +55,25 @@ class _TaskpageState extends State<Taskpage> {
                         Expanded(
                           child: TextField(
                             onSubmitted: (value) async {
+                              // Check if the field is not empty
                               if (value != '') {
-                                DatabaseHelper _dbHelper = DatabaseHelper();
+                                // Check if the task is null
+                                if (widget.task == null) {
+                                  DatabaseHelper _dbHelper = DatabaseHelper();
 
-                                Task _newTask = Task(
-                                  title: value,
-                                );
+                                  Task _newTask = Task(
+                                    title: value,
+                                  );
 
-                                await _dbHelper.insertTask(_newTask);
-                                print('New Task has been created');
+                                  await _dbHelper.insertTask(_newTask);
+                                  print('New Task has been created');
+                                } else {
+                                  print('Update the existing task');
+                                }
                               }
                             },
+                            controller: TextEditingController()
+                              ..text = _taskTitle,
                             decoration: InputDecoration(
                               hintText: 'Enter Task Title.....',
                               border: InputBorder.none,
@@ -80,20 +102,21 @@ class _TaskpageState extends State<Taskpage> {
                       ),
                     ),
                   ),
-                  TodoWidget(
-                    text: 'Create your first Task',
-                    isDone: true,
-                  ),
-                  TodoWidget(
-                    text: 'Create your first todo as well',
-                    isDone: false,
-                  ),
-                  TodoWidget(
-                    text: 'Just another todo',
-                    isDone: true,
-                  ),
-                  TodoWidget(
-                    isDone: true,
+                  Column(
+                    children: [
+                      Row(
+                        children: [
+                          Expanded(
+                            child: TextField(
+                              decoration: InputDecoration(
+                                hintText: 'Enter Todo item....',
+                                border: InputBorder.none,
+                              ),
+                            ),
+                          ),
+                        ],
+                      )
+                    ],
                   ),
                 ],
               ),
@@ -102,10 +125,10 @@ class _TaskpageState extends State<Taskpage> {
                 right: 24.0,
                 child: GestureDetector(
                   onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => Taskpage()),
-                    );
+                    // Navigator.push(
+                    //   context,
+                    //   MaterialPageRoute(builder: (context) => Taskpage()),
+                    // );
                   },
                   child: Container(
                     width: 60.0,
