@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_todo/database_helper.dart';
 import 'package:flutter_todo/screens/taskpage.dart';
 import 'package:flutter_todo/widgets.dart';
 
@@ -8,6 +9,8 @@ class Homepage extends StatefulWidget {
 }
 
 class _HomepageState extends State<Homepage> {
+  DatabaseHelper _dbHelper = DatabaseHelper();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,21 +31,21 @@ class _HomepageState extends State<Homepage> {
                     ),
                   ),
                   Expanded(
-                    child: ScrollConfiguration(
-                      behavior: NoGlowBehaviour(),
-                      child: ListView(
-                        children: [
-                          TaskCardWidget(
-                            title: "Get Started111",
-                            desc:
-                                "Hello User! Welcome to WHAT_TODO app11, this is a default task that you can edit or delete to start using the app.",
+                    child: FutureBuilder(
+                      initialData: [],
+                      future: _dbHelper.getTasks(),
+                      builder: (context, snapshot) {
+                        return ScrollConfiguration(
+                          behavior: NoGlowBehaviour(),
+                          child: ListView.builder(
+                            itemCount: snapshot.data.length,
+                            itemBuilder: (context, index) => TaskCardWidget(
+                              title: snapshot.data[index].title,
+                              desc: snapshot.data[index].description,
+                            ),
                           ),
-                          TaskCardWidget(),
-                          TaskCardWidget(),
-                          TaskCardWidget(),
-                          TaskCardWidget(),
-                        ],
-                      ),
+                        );
+                      },
                     ),
                   )
                 ],
@@ -55,7 +58,7 @@ class _HomepageState extends State<Homepage> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => Taskpage()),
-                    );
+                    ).then((value) => setState(() {}));
                   },
                   child: Container(
                     width: 60.0,
