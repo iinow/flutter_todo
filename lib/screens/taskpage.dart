@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_todo/database_helper.dart';
 import 'package:flutter_todo/models/task.dart';
-import 'package:flutter_todo/widgets.dart';
+import 'package:flutter_todo/models/todo.dart';
 
 class Taskpage extends StatefulWidget {
   final Task task;
@@ -104,17 +104,61 @@ class _TaskpageState extends State<Taskpage> {
                   ),
                   Column(
                     children: [
-                      Row(
-                        children: [
-                          Expanded(
-                            child: TextField(
-                              decoration: InputDecoration(
-                                hintText: 'Enter Todo item....',
-                                border: InputBorder.none,
+                      Padding(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 24.0,
+                        ),
+                        child: Row(
+                          children: [
+                            Container(
+                              width: 20.0,
+                              height: 20.0,
+                              margin: EdgeInsets.only(
+                                right: 12.0,
+                              ),
+                              decoration: BoxDecoration(
+                                color: Colors.transparent,
+                                borderRadius: BorderRadius.circular(6.0),
+                                border: Border.all(
+                                  color: Color(0xFF86829D),
+                                  width: 1.5,
+                                ),
+                              ),
+                              child: Image(
+                                image:
+                                    AssetImage('assets/images/check_icon.png'),
                               ),
                             ),
-                          ),
-                        ],
+                            Expanded(
+                              child: TextField(
+                                onSubmitted: (value) async {
+                                  if (value != '') {
+                                    // Check if the task is null
+                                    if (widget.task == null) {
+                                      DatabaseHelper _dbHelper =
+                                          DatabaseHelper();
+
+                                      Todo _newTodo = Todo(
+                                        taskId: widget.task.id,
+                                        title: value,
+                                        isDone: 0,
+                                      );
+
+                                      await _dbHelper.insertTodo(_newTodo);
+                                      print('Creating new todo');
+                                    } else {
+                                      print('Update the existing task');
+                                    }
+                                  }
+                                },
+                                decoration: InputDecoration(
+                                  hintText: 'Enter Todo item....',
+                                  border: InputBorder.none,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                       )
                     ],
                   ),
