@@ -41,11 +41,27 @@ class DatabaseHelper {
     Database _db = await database();
     List<Map<String, dynamic>> taskMap = await _db.query('tasks');
     return List.generate(
-        taskMap.length,
-        (index) => Task(
-              id: taskMap[index]['id'],
-              title: taskMap[index]['title'],
-              description: taskMap[index]['description'],
-            ));
+      taskMap.length,
+      (index) => Task(
+        id: taskMap[index]['id'],
+        title: taskMap[index]['title'],
+        description: taskMap[index]['description'],
+      ),
+    );
+  }
+
+  Future<List<Todo>> getTodo(int taskId) async {
+    Database _db = await database();
+    List<Map<String, dynamic>> todoMap =
+        await _db.rawQuery(''' SELECT * FROM todo WHERE taskId = $taskId ''');
+    return List.generate(
+      todoMap.length,
+      (index) => Todo(
+        id: todoMap[index]['id'],
+        taskId: todoMap[index]['taskId'],
+        title: todoMap[index]['title'],
+        isDone: todoMap[index]['isDone'],
+      ),
+    );
   }
 }
