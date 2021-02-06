@@ -1,0 +1,90 @@
+directive @specifiedBy(url: String!) on SCALAR
+scalar DateTime
+
+type Diary {
+  id: Int!
+  title: String!
+  content: String!
+  updatedAt: DateTime!
+  createdAt: DateTime!
+}
+
+input DiaryInput {
+  id: Int
+  journalId: Int!
+  title: String!
+  content: String!
+}
+
+type InsertAndUpdateDiaryOut {
+  id: Float!
+  updatedAt: DateTime!
+}
+
+type Journal {
+  id: Int!
+  name: String
+  updatedAt: DateTime!
+  createdAt: DateTime!
+}
+
+type Message {
+  id: Int!
+  text: String!
+  updatedAt: DateTime!
+  createAt: DateTime!
+}
+
+type MessageOut {
+  text: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type Mutation {
+  publishMessage(message: String!, topic: String!): Float!
+  insertAndUpdateDiary(diary: DiaryInput!): InsertAndUpdateDiaryOut!
+}
+
+type PaginatedDiaryResponse {
+  items: [Diary!]!
+  total: Int!
+  page: Int!
+  cntPageItem: Int!
+  hasMore: Boolean!
+}
+
+input PaginationInput {
+  page: Int!
+  cntPageItem: Int!
+}
+
+enum Provider {
+  KAKAO
+  GITHUB
+}
+
+type Query {
+  messages: [Message!]!
+  diaries(journalId: Int!, page: PaginationInput!): PaginatedDiaryResponse
+  diary(
+    journalId: Int!
+    yyyyMMddHHmm: String
+  ): Diary
+  diaryById(id: Int!): Diary
+  me: UserMeOut!
+  journals: [Journal!]!
+}
+
+type Subscription {
+  subscriptionMessage(topic: String!): MessageOut!
+}
+
+type UserMeOut {
+  uuid: String!
+  name: String!
+  profileImageUrl: String!
+  provider: Provider!
+  createdAt: DateTime!
+}
+

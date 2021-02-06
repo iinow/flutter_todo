@@ -1,5 +1,7 @@
+import 'package:artemis/artemis.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_todo/database_helper.dart';
+import 'package:flutter_todo/graphql/generated/todo.query.dart';
 import 'package:flutter_todo/screens/taskpage.dart';
 import 'package:flutter_todo/widgets.dart';
 
@@ -70,7 +72,13 @@ class _HomepageState extends State<Homepage> {
                 bottom: 24.0,
                 right: 0,
                 child: GestureDetector(
-                  onTap: () {
+                  onTap: () async {
+                    var client =
+                        ArtemisClient('http://iinow.synology.me:7711/graphql');
+                    final getDiary =
+                        GetDiaryQuery(variables: GetDiaryArguments(diaryId: 1));
+                    final res = await client.execute(getDiary);
+                    print(res.data.diaryById.content);
                     Navigator.push(
                       context,
                       MaterialPageRoute(

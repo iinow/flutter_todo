@@ -18,6 +18,9 @@ flutter run
 ## Build
 
 ```
+# Graphql Code Generate
+flutter pub run build_runner build
+
 # android build
 flutter build apk
 
